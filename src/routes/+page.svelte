@@ -7,13 +7,13 @@
 	let formData = {};
 	const formMachine = createMachine({
 		id: 'Bridgekeeper Multi-step Form',
-		predictableActionArguments: true,
-		initial: 'answering questions',
 		context: {
 			fullName: '',
 			quest: '',
 			color: ''
 		},
+		predictableActionArguments: true,
+		initial: 'answering questions',
 		states: {
 			thrownIntoVolcano: {
 				type: 'final'
@@ -69,10 +69,10 @@
 					},
 					validateName: {
 						on: {
-							always: [
+							'': [
 								{
 									target: 'enteringQuest',
-									cond: (context) => context.fullName.length > 0
+									cond: (context) => context.fullName !== undefined && context.fullName.length > 0
 								}
 							]
 						}
