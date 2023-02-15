@@ -1,0 +1,23 @@
+<main>
+	<div class="container">
+		<slot />
+	</div>
+</main>
+
+<style>
+@import url("https://fonts.googleapis.com/css?family=Muli&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+main {
+  font-family: "Muli", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+}
+</style>
