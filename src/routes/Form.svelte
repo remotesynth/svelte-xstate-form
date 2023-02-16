@@ -21,6 +21,10 @@
 			<h2>You may pass!</h2>
 			<button class="btn submit">Finish </button>
 		</div>
+	{:else if active_state === 'thrownIntoVolcano'}
+		<div class="message">
+			<h2>You have been thrown into the volcano!</h2>
+		</div>
 	{/if}
 </form>
 

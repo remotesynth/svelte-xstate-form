@@ -6,11 +6,11 @@
 	let fullName, quest, favorite_color;
 	let formData = {};
 	const formMachine = createMachine({
-		id: 'Bridgekeeper Multi-step Form',
+		id: 'bridgekeeper-multi-step-form',
 		context: {
 			fullName: '',
 			quest: '',
-			color: ''
+			favorite_color: ''
 		},
 		predictableActionArguments: true,
 		initial: 'answering questions',
@@ -24,33 +24,56 @@
 					enteringQuest: {
 						on: {
 							CONFIRM_QUEST: {
-								target: 'enteringFavoriteColor',
+								target: 'validateQuest',
 								actions: [
 									assign({
-										name: (context, event) => {
+										quest: (context, event) => {
 											if (quest) return quest;
 										}
 									})
-								],
-								// you cannot get to this without entering a quest
-								cond: (context) => context.quest.length > 0
+								]
 							}
+						}
+					},
+					validateQuest: {
+						on: {
+							'': [
+								{
+									target: 'enteringFavoriteColor',
+									cond: (context) => context.quest !== undefined && context.quest.length > 0
+								},
+								{
+									target: '#bridgekeeper-multi-step-form.thrownIntoVolcano'
+								}
+							]
 						}
 					},
 					enteringFavoriteColor: {
 						on: {
 							CONFIRM_FAVORITE_COLOR: {
-								target: 'allAnswered',
+								target: 'validateFavoriteColor',
 								actions: [
 									assign({
-										name: (context, event) => {
+										favorite_color: (context, event) => {
 											if (favorite_color) return favorite_color;
 										}
 									})
-								],
-								// you cannot get to this without entering a color
-								cond: (context) => context.favorite_color.length > 0
+								]
 							}
+						}
+					},
+					validateFavoriteColor: {
+						on: {
+							'': [
+								{
+									target: 'allAnswered',
+									cond: (context) =>
+										context.favorite_color !== undefined && context.favorite_color.length > 0
+								},
+								{
+									target: '#bridgekeeper-multi-step-form.thrownIntoVolcano'
+								}
+							]
 						}
 					},
 					enteringName: {
@@ -73,6 +96,9 @@
 								{
 									target: 'enteringQuest',
 									cond: (context) => context.fullName !== undefined && context.fullName.length > 0
+								},
+								{
+									target: '#bridgekeeper-multi-step-form.thrownIntoVolcano'
 								}
 							]
 						}
@@ -102,7 +128,7 @@
 		if (state.matches('answering questions')) {
 			active_state = state.value['answering questions'];
 			if (progressBar) progressBar.handleProgress(1);
-			console.log(active_state);
+			console.log('answering questions:' + active_state);
 		} else {
 			console.log(state.value);
 		}
@@ -113,13 +139,13 @@
 	let steps = [
 			{ title: 'Name', event: 'CONFIRM_NAME' },
 			{ title: 'Quest', event: 'CONFIRM_QUEST' },
-			{ title: 'Color', event: 'CONFIRM_COLOR' },
+			{ title: 'Color', event: 'CONFIRM_FAVORITE_COLOR' },
 			{ title: 'Confirmation', event: '' }
 		],
-		currentActive = 1;
+		currentActive = 0;
 
 	const handleProgress = (stepIncrement) => {
-		service.send(steps[currentActive - 1].event);
+		service.send(steps[currentActive].event);
 	};
 </script>
 
